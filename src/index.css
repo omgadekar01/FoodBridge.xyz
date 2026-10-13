@@ -30,6 +30,13 @@ body {
 
 button, input, select { font: inherit; }
 
+.auth-page {
+  background:
+    radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.1), transparent 26rem),
+    radial-gradient(circle at 90% 90%, rgba(210, 167, 83, 0.1), transparent 24rem),
+    #f2f7f3;
+}
+
 .leaflet-container {
   width: 100%;
   height: 100%;

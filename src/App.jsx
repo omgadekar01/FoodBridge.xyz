@@ -13,6 +13,7 @@ import {
   HandCoins,
   Home,
   Leaf,
+  LogOut,
   MapPinned,
   Menu,
   PackageCheck,
@@ -172,6 +173,7 @@ const rolePermissions = {
   Admin: ['dashboard','listings','matching','dispatch','safety','verification','analytics','audit','donor','recipient','driver','security','architecture'],
   Donor: ['dashboard','listings','donor','analytics'],
   NGO: ['dashboard','matching','safety','verification','analytics','recipient','audit'],
+  Recipient: ['dashboard','matching','safety','verification','analytics','recipient'],
   Driver: ['dashboard','dispatch','driver','verification','analytics'],
 }
 
@@ -430,10 +432,9 @@ function AuditTimeline() {
   )
 }
 
-function App() {
+function App({ role = 'Admin', onLogout = () => {} }) {
   const [activeSection, setActiveSection] = useState('dashboard')
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [role, setRole] = useState(() => localStorage.getItem('foodbridge-role') || 'Admin')
   const [distance, setDistance] = useState(4.8)
   const [quantity, setQuantity] = useState(120)
   const [expiry, setExpiry] = useState(46)
@@ -442,10 +443,6 @@ function App() {
   const [verified, setVerified] = useState(false)
   const [liveDemoStep, setLiveDemoStep] = useState(-1)
   const [toast, setToast] = useState('')
-
-  useEffect(() => {
-    localStorage.setItem('foodbridge-role', role)
-  }, [role])
 
   useEffect(() => {
     if (!toast) return
@@ -521,22 +518,20 @@ function App() {
                 <button type="button" className="hidden rounded-full border border-slate-200 bg-white p-2 text-slate-600 sm:inline-flex">
                   <Bell size={16} />
                 </button>
-                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2 py-1.5 shadow-sm">
+                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
                   <div className="text-right">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Demo Role</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Signed in as</div>
                     <div className="text-sm font-semibold text-slate-700">{role}</div>
                   </div>
-                  <select
-                    aria-label="Select role"
-                    value={role}
-                    onChange={(event) => setRole(event.target.value)}
-                    className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-sm font-medium text-slate-700 outline-none"
+                  <button
+                    type="button"
+                    onClick={onLogout}
+                    className="ml-1 inline-flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+                    aria-label="Log out"
                   >
-                    <option>Admin</option>
-                    <option>Donor</option>
-                    <option>NGO</option>
-                    <option>Driver</option>
-                  </select>
+                    <LogOut size={15} />
+                    <span className="hidden sm:inline">Log out</span>
+                  </button>
                 </div>
               </div>
             </div>

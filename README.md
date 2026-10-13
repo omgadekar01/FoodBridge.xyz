@@ -1,16 +1,24 @@
-# React + Vite
+# FoodBridge
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+FoodBridge is a React and Vite hackathon prototype for coordinating surplus food rescue between donors, NGOs, recipients, and delivery teams. Its existing operations dashboard includes simulated listings, matching, route, verification, and impact analytics.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```sh
+npm install
+npm run dev
+```
 
-## React Compiler
+Open the local URL printed by Vite. `npm run build` creates a production bundle, and `npm run lint` runs Oxlint.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Demonstrate authentication
 
-## Expanding the Oxlint configuration
+The application opens on the FoodBridge sign-in page. Choose **Create account** to register an NGO, Donor, or Food recipient, fill in that role's fields, and submit. You can also sign in directly with any valid email, a password of at least eight characters, and the role you want to demonstrate. The demo service accepts new sign-in details and keeps registered demo accounts in memory for the current browser session.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Each role opens the existing dashboard with matching role navigation:
+
+- **NGO** → NGO dashboard
+- **Donor** → Donor dashboard
+- **Food recipient** → recipient dashboard
+
+Use **Log out** in the dashboard header to return to sign-in. The demo session stores only a generated session ID, role, and expiry time in browser storage. Registration details and passwords are kept only in memory and are never persisted. Sessions expire after eight hours. There is no backend or production-grade authentication; the client-side demo is for demonstrations only.
