@@ -243,20 +243,20 @@ function StatusBadge({ label, tone = 'success' }) {
   )
 }
 
-function Sidebar({ activeSection, setActiveSection, role, mobileOpen, setMobileOpen }) {
+function Sidebar({ activeSection, setActiveSection, role, mobileOpen, setMobileOpen, onLogout }) {
   const visible = rolePermissions[role] || rolePermissions.NGO
 
   return (
     <>
       <aside
         id="dashboard-sidebar"
-        className={`fixed inset-y-0 left-0 z-40 flex w-[17rem] flex-col overflow-y-auto border-r border-slate-200/80 bg-white p-5 shadow-[0_25px_60px_rgba(15,23,42,0.08)] transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`fixed inset-y-0 left-0 z-40 flex w-[17rem] flex-col overflow-y-auto border-r border-slate-200/80 bg-white/95 p-5 shadow-[0_25px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label={`${role} navigation`}
       >
         <div className="flex shrink-0 items-center justify-between pb-6">
           <div>
-            <h1 className="text-lg font-black uppercase tracking-[0.2em] text-emerald-700">FoodBridge</h1>
-            <p className="mt-1 text-sm font-medium text-slate-500">Rescue Network</p>
+            <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-600">FoodBridge</div>
+            <h1 className="mt-1 text-xl font-black text-slate-900">Rescue Network</h1>
           </div>
           <button
             type="button"
@@ -280,16 +280,35 @@ function Sidebar({ activeSection, setActiveSection, role, mobileOpen, setMobileO
                   setMobileOpen(false)
                 }}
                 aria-current={activeSection === item.id ? 'location' : undefined}
-                className={`flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${activeSection === item.id ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                className={`flex w-full items-center gap-3 rounded-2xl px-3.5 py-2.5 text-left text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${activeSection === item.id ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
               >
-                <span className="flex items-center gap-3">
+                <span className={`flex h-8 w-8 items-center justify-center rounded-xl ${activeSection === item.id ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
                   <Icon size={16} aria-hidden="true" />
-                  {item.label}
                 </span>
+                <span>{item.label}</span>
               </a>
             )
           })}
         </nav>
+
+        <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-3">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Signed in as</div>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <div>
+              <div className="text-sm font-semibold text-slate-800">{role}</div>
+              <div className="text-xs text-slate-500">Operations access</div>
+            </div>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-2 text-xs font-semibold text-slate-700 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700"
+              aria-label="Log out"
+            >
+              <LogOut size={14} />
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
       </aside>
       {mobileOpen && (
         <button
@@ -506,7 +525,7 @@ function App({ role = 'Admin', onLogout = () => {} }) {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_18%),linear-gradient(#f7faf8,#f1f9f5)] text-slate-900">
       <div className="min-h-screen">
-        <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} role={role} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+        <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} role={role} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} onLogout={onLogout} />
 
         <main className="min-w-0 lg:ml-[17rem]">
           <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/80 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
