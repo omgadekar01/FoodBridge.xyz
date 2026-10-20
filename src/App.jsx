@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   CircleDashed,
   Clock3,
-  Cpu,
   FileText,
   Gauge,
   HandCoins,
@@ -24,7 +23,6 @@ import {
   ShoppingCart,
   Sparkles,
   Truck,
-  Users,
   X,
 } from 'lucide-react'
 import {
@@ -57,14 +55,10 @@ const navItems = [
   { id: 'verification', label: 'Verification', icon: QrCode },
   { id: 'analytics', label: 'Impact Analytics', icon: Activity },
   { id: 'audit', label: 'Audit Logs', icon: FileText },
-  { id: 'donor', label: 'Donor Portal', icon: HandCoins },
-  { id: 'recipient', label: 'NGO Portal', icon: Users },
-  { id: 'driver', label: 'Driver Portal', icon: Truck },
-  { id: 'security', label: 'Security', icon: ShieldCheck },
-  { id: 'architecture', label: 'System Architecture', icon: Cpu },
 ]
 
-const kpis = [
+const kpis = 
+[
   { label: 'Food Listings Today', value: 48, suffix: '', icon: ShoppingCart, tone: 'emerald' },
   { label: 'Meals Available', value: 3840, suffix: '', icon: PackageCheck, tone: 'blue' },
   { label: 'AI Matches Generated', value: 42, suffix: '', icon: Sparkles, tone: 'violet' },
@@ -170,11 +164,9 @@ const demoSteps = [
 ]
 
 const rolePermissions = {
-  Admin: ['dashboard','listings','matching','dispatch','safety','verification','analytics','audit','donor','recipient','driver','security','architecture'],
-  Donor: ['dashboard','listings','donor','analytics'],
-  NGO: ['dashboard','matching','safety','verification','analytics','recipient','audit'],
-  Recipient: ['dashboard','matching','safety','verification','analytics','recipient'],
-  Driver: ['dashboard','dispatch','driver','verification','analytics'],
+  Donor: ['dashboard', 'listings', 'analytics'],
+  NGO: ['dashboard', 'matching', 'safety', 'verification', 'analytics', 'audit'],
+  Recipient: ['dashboard', 'listings', 'matching', 'dispatch', 'verification', 'analytics'],
 }
 
 function formatNumber(value) {
@@ -252,45 +244,61 @@ function StatusBadge({ label, tone = 'success' }) {
 }
 
 function Sidebar({ activeSection, setActiveSection, role, mobileOpen, setMobileOpen }) {
-  const visible = rolePermissions[role] || rolePermissions.Admin
+  const visible = rolePermissions[role] || rolePermissions.NGO
 
   return (
     <>
-      <aside className={`fixed inset-y-0 left-0 z-40 w-72 border-r border-slate-200/80 bg-white/90 p-5 shadow-[0_25px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-transform duration-300 lg:static lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="flex items-center justify-between pb-6">
+      <aside
+        id="dashboard-sidebar"
+        className={`fixed inset-y-0 left-0 z-40 flex w-[17rem] flex-col overflow-y-auto border-r border-slate-200/80 bg-white p-5 shadow-[0_25px_60px_rgba(15,23,42,0.08)] transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        aria-label={`${role} navigation`}
+      >
+        <div className="flex shrink-0 items-center justify-between pb-6">
           <div>
-            <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-600">FoodBridge</div>
-            <h1 className="mt-1 text-xl font-black text-slate-900">Rescue Network</h1>
+            <h1 className="text-lg font-black uppercase tracking-[0.2em] text-emerald-700">FoodBridge</h1>
+            <p className="mt-1 text-sm font-medium text-slate-500">Rescue Network</p>
           </div>
-          <button className="rounded-lg border border-slate-200 p-2 text-slate-700 lg:hidden" onClick={() => setMobileOpen(false)}>
+          <button
+            type="button"
+            className="rounded-lg border border-slate-200 p-2 text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 lg:hidden"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close navigation menu"
+          >
             <X size={18} />
           </button>
         </div>
 
-        <div className="space-y-1.5">
+        <nav className="space-y-1.5" aria-label="Dashboard sections">
           {navItems.filter((item) => visible.includes(item.id)).map((item) => {
             const Icon = item.icon
             return (
-              <button
+              <a
                 key={item.id}
-                type="button"
+                href={`#${item.id}`}
                 onClick={() => {
                   setActiveSection(item.id)
                   setMobileOpen(false)
-                  document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                 }}
-                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-medium transition ${activeSection === item.id ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                aria-current={activeSection === item.id ? 'location' : undefined}
+                className={`flex w-full items-center rounded-xl px-3 py-2.5 text-left text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${activeSection === item.id ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
               >
                 <span className="flex items-center gap-3">
-                  <Icon size={16} />
+                  <Icon size={16} aria-hidden="true" />
                   {item.label}
                 </span>
-              </button>
+              </a>
             )
           })}
-        </div>
+        </nav>
       </aside>
-      {mobileOpen && <button className="fixed inset-0 z-30 bg-slate-900/20 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Close menu" />} 
+      {mobileOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-30 bg-slate-900/20 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-label="Close navigation menu"
+        />
+      )}
     </>
   )
 }
@@ -440,9 +448,9 @@ function App({ role = 'Admin', onLogout = () => {} }) {
   const [expiry, setExpiry] = useState(46)
   const [capacity, setCapacity] = useState(88)
   const [otpValue, setOtpValue] = useState('')
-  const [verified, setVerified] = useState(false)
   const [liveDemoStep, setLiveDemoStep] = useState(-1)
   const [toast, setToast] = useState('')
+  const verified = otpValue.length === 6 && otpValue === '482913'
 
   useEffect(() => {
     if (!toast) return
@@ -469,14 +477,16 @@ function App({ role = 'Admin', onLogout = () => {} }) {
     }
   }, [distance, quantity, expiry, capacity])
 
-  useEffect(() => {
-    if (otpValue.length === 6 && otpValue === '482913') {
-      setVerified(true)
+  const handleOtpChange = (event) => {
+    const nextValue = event.target.value.replace(/\D/g, '').slice(0, 6)
+    setOtpValue(nextValue)
+
+    if (nextValue.length === 6 && nextValue === '482913') {
       setToast('Handover Verified')
-    } else if (otpValue.length === 6) {
-      setVerified(false)
+    } else if (nextValue.length === 6) {
+      setToast('')
     }
-  }, [otpValue])
+  }
 
   const runDemo = () => {
     setLiveDemoStep(0)
@@ -495,14 +505,21 @@ function App({ role = 'Admin', onLogout = () => {} }) {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_18%),linear-gradient(#f7faf8,#f1f9f5)] text-slate-900">
-      <div className="mx-auto max-w-[1800px] lg:flex">
+      <div className="min-h-screen">
         <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} role={role} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 lg:ml-[17rem]">
           <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/80 px-4 py-3 backdrop-blur-xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <button type="button" className="rounded-xl border border-slate-200 bg-white p-2 text-slate-700 lg:hidden" onClick={() => setMobileOpen(true)}>
+                <button
+                  type="button"
+                  className="rounded-xl border border-slate-200 bg-white p-2 text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 lg:hidden"
+                  onClick={() => setMobileOpen(true)}
+                  aria-label="Open navigation menu"
+                  aria-expanded={mobileOpen}
+                  aria-controls="dashboard-sidebar"
+                >
                   <Menu size={18} />
                 </button>
                 <div className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-emerald-700 sm:flex">
@@ -537,7 +554,7 @@ function App({ role = 'Admin', onLogout = () => {} }) {
             </div>
           </header>
 
-          <div className="space-y-8 px-4 py-6 sm:px-6 lg:px-8">
+          <div className="dashboard-content space-y-8 px-4 py-6 sm:px-6 lg:px-8">
             <section id="dashboard" className="rounded-[28px] border border-slate-200/80 bg-white/80 p-4 shadow-[0_25px_60px_rgba(15,23,42,0.05)] backdrop-blur-sm sm:p-6 xl:p-8">
               <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                 <div>
@@ -865,7 +882,7 @@ function App({ role = 'Admin', onLogout = () => {} }) {
                   <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">Enter OTP</label>
                   <input
                     value={otpValue}
-                    onChange={(event) => setOtpValue(event.target.value.replace(/\D/g, '').slice(0, 6))}
+                    onChange={handleOtpChange}
                     maxLength={6}
                     placeholder="482913"
                     className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-lg font-bold tracking-[0.3em] text-slate-900 outline-none ring-0 placeholder:text-slate-400"

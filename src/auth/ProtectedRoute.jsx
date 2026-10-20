@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from './authContext.js'
+import { dashboardPathForRole } from './roleRoutes.js'
 
 export default function ProtectedRoute({ children, requiredRole }) {
   const { user } = useAuth()

@@ -30,6 +30,8 @@ body {
 
 button, input, select { font: inherit; }
 
+.dashboard-content [id] { scroll-margin-top: 6rem; }
+
 .auth-page {
   background:
     radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.1), transparent 26rem),
