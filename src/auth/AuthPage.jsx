@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from './authContext.js'
+import { requiresFssaiVerification } from './authService.js'
 import { dashboardPathForRole } from './roleRoutes.js'
 import RoleSelector from './RoleSelector.jsx'
 import { getTranslations, languages } from './translations.js'
@@ -147,7 +148,7 @@ export default function AuthPage() {
           remember: form.remember,
         })
       }
-      navigate(dashboardPathForRole(user.role), { replace: true })
+      navigate(requiresFssaiVerification(user) ? '/verify-fssai' : dashboardPathForRole(user.role), { replace: true })
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : ''
       if (errorMessage.includes('already exists')) {

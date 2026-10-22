@@ -18,7 +18,10 @@ The application opens on the FoodBridge sign-in page. Choose **Create account** 
 Each role opens the existing dashboard with matching role navigation:
 
 - **NGO** → NGO dashboard
-- **Donor** → Donor dashboard
+- **Food-business Donor** → FSSAI demo verification, then Donor dashboard
+- **Individual Donor** → Donor dashboard without business-license verification
 - **Food recipient** → recipient dashboard
 
 Use **Log out** in the dashboard header to return to sign-in. The demo session stores only a generated session ID, role, and expiry time in browser storage. Registration details and passwords are kept only in memory and are never persisted. Sessions expire after eight hours. There is no backend or production-grade authentication; the client-side demo is for demonstrations only.
+
+Food-business Donors must complete the FSSAI demo modal before the Donor dashboard can be opened, including after a refresh or by entering the dashboard URL directly. NGO, Food recipient, and Individual Donor flows do not require this step. The demo stores only a per-account `demo-approved` status; it does not store the entered license number. A 14-digit format check is not an official license verification: other correctly formatted numbers simulate a demo pass, while `00000000000000` simulates a failure. Do not enter a real license number. An official verification provider and a trusted server-side endpoint are required before this flow can verify licenses or secure donor features in production; browser storage is not an authorization boundary.

@@ -11,7 +11,12 @@ function createDemoUser(profile) {
     role: profile.role,
     email: profile.email,
     name: profile.name,
+    individualDonor: profile.role === 'Donor' && profile.individualDonor === true,
   }
+}
+
+function fssaiStatusKey(userId) {
+  return `foodbridge-demo-fssai-status:${userId}`
 }
 
 function saveSession(user, remember) {
@@ -21,6 +26,7 @@ function saveSession(user, remember) {
   storage.setItem(SESSION_KEY, JSON.stringify({
     id: user.id,
     role: user.role,
+    individualDonor: user.individualDonor,
     expiresAt: Date.now() + 8 * 60 * 60 * 1000,
   }))
 }
@@ -81,7 +87,13 @@ export function restoreDemoSession() {
       throw new Error('The saved demo session is invalid or expired.')
     }
 
-    return { id: session.id, role: session.role, name: 'FoodBridge member', email: '' }
+    return {
+      id: session.id,
+      role: session.role,
+      individualDonor: session.individualDonor === true,
+      name: 'FoodBridge member',
+      email: '',
+    }
   } catch {
     window.localStorage.removeItem(SESSION_KEY)
     window.sessionStorage.removeItem(SESSION_KEY)
@@ -92,4 +104,24 @@ export function restoreDemoSession() {
 export function clearDemoSession() {
   window.localStorage.removeItem(SESSION_KEY)
   window.sessionStorage.removeItem(SESSION_KEY)
+}
+
+export function hasDemoFssaiVerification(user) {
+  return Boolean(
+    user?.role === 'Donor'
+    && !user.individualDonor
+    && window.localStorage.getItem(fssaiStatusKey(user.id)) === 'demo-approved',
+  )
+}
+
+export function markDemoFssaiVerification(user) {
+  if (user?.role !== 'Donor' || user.individualDonor) {
+    throw new Error('FSSAI demo verification is only available for food-business donors.')
+  }
+
+  window.localStorage.setItem(fssaiStatusKey(user.id), 'demo-approved')
+}
+
+export function requiresFssaiVerification(user) {
+  return Boolean(user?.role === 'Donor' && !user.individualDonor && !hasDemoFssaiVerification(user))
 }
